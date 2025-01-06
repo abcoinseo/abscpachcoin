@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AB Coin Airdrop - Admin Panel</title>
+    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+    <script type="module">
+        // Import Firebase SDKs
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue, update } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-database.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyASHjsl_s3Ct2mhx-CHD8unOKiVMyQV0eE",
+            authDomain: "ab-soler-coin.firebaseapp.com",
+            databaseURL: "https://ab-soler-coin-default-rtdb.firebaseio.com",
+            projectId: "ab-soler-coin",
+            storageBucket: "ab-soler-coin.firebasestorage.app",
+            messagingSenderId: "659510955458",
+            appId: "1:659510955458:web:01338b3270828c9011da5b"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        // TON Connect UI Setup
+        const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+            manifestUrl: 'https://abu09127abu.github.io/Ab-coin-tast-/tonconnect-manifest.json',
+            buttonRootId: 'ton-connect'
+        });
+
+        // Task Data Reference in Firebase
+        const tasksRef = ref(database, 'tasks');
+
+        // Add Task by Admin
+        const addTask = () => {
+            const taskName = document.getElementById("taskName").value;
+            const reward = parseInt(document.getElementById("reward").value);
+            const taskId = Date.now().toString(); // Unique task ID based on timestamp
+
+            if (taskName && reward > 0) {
+                const newTaskRef = ref(database, 'tasks/' + taskId);
+                set(newTaskRef, {
+                    taskName: taskName,
+                    reward: reward,
+                    status: 'active',
+                });
+                alert('Task Added Successfully!');
+                document.getElementById("taskName").value = '';
+                document.getElementById("reward").value = '';
+                updateTaskUI();
+            } else {
+                alert('Please fill out the task details correctly!');
+            }
+        };
+
+        // Delete Task by Admin
+        const deleteTask = (taskId) => {
+            const taskRef = ref(database, 'tasks/' + taskId);
+            set(taskRef, null); // Deleting task from Firebase
+            alert('Task Deleted Successfully!');
+            updateTaskUI();
+        };
+
+        // Mark Task as Completed by Admin
+        const completeTaskByAdmin = (taskId) => {
+            const taskRef = ref(database, 'tasks/' + taskId);
+            update(taskRef, { status: 'completed' });
+            alert('Task Marked as Completed!');
+            updateTaskUI();
+        };
+
+        // Update the Task UI dynamically based on Firebase data
+        const updateTaskUI = () => {
+            onValue(tasksRef, (snapshot) => {
+                const tasks = snapshot.val();
+                let taskListHTML = '';
+                for (const taskId in tasks) {
+                    const task = tasks[taskId];
+                    taskListHTML += `
+                        <div class="task-box" id="task-${taskId}">
+                            <div class="task-logo"></div>
+                            <div class="task-info">
+                                <p>${task.taskName}</p>
+                                <p>Reward: ${task.reward} AB Coin</p>
+                                <button onclick="completeTask('${taskId}')">Complete Task</button>
+                            </div>
+                            <div class="admin-actions">
+                                <button onclick="completeTaskByAdmin('${taskId}')">Mark as Completed</button>
+                                <button onclick="deleteTask('${taskId}')">Delete Task</button>
+                            </div>
+                        </div>
+                    `;
+                }
+                document.getElementById("taskList").innerHTML = taskListHTML;
+            });
+        };
+
+        // Initial Setup for Admin and User Page
+        document.addEventListener("DOMContentLoaded", () => {
+            updateTaskUI();
+        });
+    </script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: black;
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+
+        #ton-connect {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 100;
+        }
+
+        .task-box {
+            background-color: #333;
+            padding: 20px;
+            margin: 10px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: white;
+        }
+
+        .task-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #444;
+            margin-right: 10px;
+        }
+
+        .task-info {
+            flex: 1;
+        }
+
+        button {
+            background-color: green;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .admin-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .admin-actions button {
+            background-color: red;
+        }
+
+        #taskList {
+            margin: 20px;
+        }
+
+        .add-task-form {
+            background-color: #444;
+            padding: 20px;
+            margin: 10px;
+            border-radius: 10px;
+            max-width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .add-task-form input, .add-task-form button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .add-task-form button {
+            background-color: green;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="ton-connect"></div>
+
+    <!-- Admin Task Addition Form -->
+    <div class="add-task-form">
+        <h3>Add New Task</h3>
+        <input type="text" id="taskName" placeholder="Task Name" />
+        <input type="number" id="reward" placeholder="Reward (AB Coin)" />
+        <button onclick="addTask()">Add Task</button>
+    </div>
+
+    <div id="taskList"></div>
+
+    <div id="abCoinCounter">0 AB Coin</div>
+
+</body>
+
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loading...</title>
+  <!-- Link to Google Material Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #202124;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+    }
+    .loading-container {
+      position: relative;
+      width: 120px;
+      height: 120px;
+    }
+    .circle {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      animation: move 1.5s linear infinite;
+    }
+    .circle:nth-child(1) { 
+      animation-delay: 0s; 
+      top: 0;
+      left: 35%;
+    }
+    .circle:nth-child(2) { 
+      animation-delay: 0.3s; 
+      top: 25%;
+      left: 0;
+    }
+    .circle:nth-child(3) { 
+      animation-delay: 0.6s; 
+      top: 55%;
+      left: 0;
+    }
+    .circle:nth-child(4) { 
+      animation-delay: 0.9s; 
+      top: 80%;
+      left: 35%;
+    }
+    @keyframes move {
+      0% {
+        transform: translate(0, 0);
+      }
+      25% {
+        transform: translate(30px, -30px);
+      }
+      50% {
+        transform: translate(60px, 0);
+      }
+      75% {
+        transform: translate(30px, 30px);
+      }
+      100% {
+        transform: translate(0, 0);
+      }
+    }
+    .material-icons {
+      font-size: 3rem;
+      transition: transform 0.2s ease, box-shadow 0.5s ease-in-out;
+    }
+    .circle:nth-child(1) .material-icons {
+      color: #FFEB3B; /* Sun - Yellow */
+      text-shadow: 0 0 15px rgba(255, 235, 59, 0.8), 0 0 25px rgba(255, 235, 59, 0.6);
+    }
+    .circle:nth-child(2) .material-icons {
+      color: #2196F3; /* Moon - Blue */
+      text-shadow: 0 0 15px rgba(33, 150, 243, 0.8), 0 0 25px rgba(33, 150, 243, 0.6);
+    }
+    .circle:nth-child(3) .material-icons {
+      color: #4CAF50; /* Earth - Green */
+      text-shadow: 0 0 15px rgba(76, 175, 80, 0.8), 0 0 25px rgba(76, 175, 80, 0.6);
+    }
+    .circle:nth-child(4) .material-icons {
+      color: #9C27B0; /* Stars - Purple */
+      text-shadow: 0 0 15px rgba(156, 39, 176, 0.8), 0 0 25px rgba(156, 39, 176, 0.6);
+    }
+    .loading-text {
+      color: white;
+      font-size: 1.5rem;
+      margin-top: 20px;
+      animation: fadeInOut 3s ease-in-out infinite;
+    }
+    @keyframes fadeInOut {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="loading-container">
+    <div class="circle">
+      <span class="material-icons">wb_sunny</span> <!-- Sun icon -->
+    </div>
+    <div class="circle">
+      <span class="material-icons">brightness_3</span> <!-- Moon icon -->
+    </div>
+    <div class="circle">
+      <span class="material-icons">public</span> <!-- Earth icon -->
+    </div>
+    <div class="circle">
+      <span class="material-icons">stars</span> <!-- Stars icon -->
+    </div>
+  </div>
+  <div class="loading-text">Loading...</div>
+
+  <script>
+     // Check if user has already visited, if yes, redirect to home.html
+     if (localStorage.getItem('visitedBefore')) {
+            setTimeout(() => {
+                window.location.href = "home.html"; // Redirect to home.html after 5-7 seconds
+            }, 5000); // 5 seconds delay
+        } else {
+            // If not visited before, mark as visited and redirect to 1.html after 5-7 seconds
+            localStorage.setItem('visitedBefore', 'true');
+            setTimeout(() => {
+                window.location.href = "1.html"; // Redirect to 1.html after 5-7 seconds
+            }, 5000); // 5 seconds delay
+        }
+  </script>
+</body>
+</html>
